@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function addToCart(Request $request)
+    public function addToCart(Request $request , $id)
     {
         $product_id = $request->input('product_id');
         $product_check = Product::where('id', $product_id);
@@ -22,6 +22,7 @@ class CartController extends Controller
                 $cart = new Cart();
                 $cart->product_id = $product_id;
                 $cart->quantity = $request->input('quantity');
+                $cart->user_id = $id;
                 $cart->save();
                 return ['result' => "Added to cart successfully"];
             }

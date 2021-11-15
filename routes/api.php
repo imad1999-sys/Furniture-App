@@ -32,7 +32,7 @@ Route::delete("/delete-product/{id}",[\App\Http\Controllers\ProductController::c
 Route::put("/update-product/{id}" , [\App\Http\Controllers\ProductController::class , 'updateProduct']);
 
 //CartController
-Route::post("/add-to-cart" , [\App\Http\Controllers\CartController::class , 'addToCart']);
+Route::post("/add-to-cart/{id}" , [\App\Http\Controllers\CartController::class , 'addToCart']);
 Route::get("/get-all-products-from-cart" , [\App\Http\Controllers\CartController::class , 'getAllProductsFromCart']);
 Route::get('/get-product/{id}' , [\App\Http\Controllers\CartController::class , 'getProductByIdFromCart']);
 Route::delete('/delete-from-cart/{id}',[\App\Http\Controllers\CartController::class , 'deleteProductFromCart']);

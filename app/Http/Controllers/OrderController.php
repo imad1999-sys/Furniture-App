@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function placeOrder($id , Request $request){
+    public function placeOrder($id, Request $request)
+    {
         $order = new Order();
         $order->user_id = $id;
         $order->first_name = $request->input('first_name');
@@ -25,19 +26,20 @@ class OrderController extends Controller
         $order->phone = $request->input('phone');
         $order->email = $request->input('email');
         $order->pincode = $request->input('pincode');
-        $order->tracking_no = 'furniture'.rand(0 , 1000);
+        $order->tracking_no = 'furniture' . rand(0, 1000);
         $total = 0;
-        $cartTotal = Cart::where('user_id' , $id)->get();
-        foreach ($cartTotal as $item){
-            $prod = Product::where('id' , $item->product_id)->first();
+        $cartTotal = Cart::where('user_id', $id)->get();
+        //echo $cartTotal;
+        foreach ($cartTotal as $item) {
+            $prod = Product::where('id', $item->product_id)->first();
             $total += $prod->selling_price * $item->quantity;
         }
         $order->total_price = $total;
         $order->save();
 
-        $cartItems = Cart::where('user_id' , $id)->get();
-        foreach ($cartItems as $item){
-            $prod = Product::where('id' , $item->product_id)->first();
+        $cartItems = Cart::where('user_id', $id)->get();
+        foreach ($cartItems as $item) {
+            $prod = Product::where('id', $item->product_id)->first();
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $item->product_id,
@@ -45,16 +47,20 @@ class OrderController extends Controller
                 'price' => $prod->selling_price,
             ]);
         }
-        $cartItems = Cart::all();
-        Cart::destroy($cartItems);
+        $carts = Cart::all();
+        Cart::destroy($carts);
         return $order;
     }
-    public function viewOrder(){
-        return Order::join('order_items' , 'order_items.order_id' , '=' , 'orders.id')
-            ->join('products' , 'products.id' , '=' , 'order_items.product_id')
-            ->get(['orders.*' , 'order_items.*' , 'products.*']);
+
+    public function viewOrder()
+    {
+        return Order::join('order_items', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'products.id', '=', 'order_items.product_id')
+            ->get(['orders.total_price', 'order_items.price' ,'order_items.quantity', 'products.name' , 'products.small_description' , 'products.image']);
     }
-    public function allOrders(){
+
+    public function allOrders()
+    {
         return Order::all();
     }
 }

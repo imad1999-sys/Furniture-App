@@ -24,9 +24,6 @@ class UserController extends Controller
         $this->validate($request, [
             'phone' => 'required',
         ]);
-        $this->validate($request, [
-            'image' => 'required',
-        ]);
 
         $user = new User();
         $user->first_name = $request->input('first_name');
@@ -34,7 +31,6 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
         $user->phone = $request->input('phone');
-        $user->image = $request->input('image');
         $user->first_address = $request->input('first_address');
         $user->second_address = $request->input('second_address');
         $user->city = $request->input('city');
@@ -48,7 +44,7 @@ class UserController extends Controller
         $admin = User::where('email', $request->email)->first();
 
         if (!$admin || !Hash::check($request->password, $admin->password)) {
-            return self::getResponse(false , "error email or password" , null , 401 );
+            return ['result' => "error email or password" ];
         }
 
         $token = $admin->createToken('my-app-token')->plainTextToken;
